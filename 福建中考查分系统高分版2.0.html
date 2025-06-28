@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福建省2025年初中学业水平考试成绩查询系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a3a6c, #2c5282);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(to right, #1a3a6c, #2c5282);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, #ff9800, #ff5722);
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo i {
+            font-size: 36px;
+            color: #1a3a6c;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .current-date {
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .warning-banner {
+            background: linear-gradient(to right, #ff9800, #ff5722);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 0 auto 25px;
+            max-width: 800px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 152, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            font-size: 22px;
+            color: #1a3a6c;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            color: #2c5282;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #444;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: #2c5282;
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.2);
+            outline: none;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, #1a3a6c, #2c5282);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(to right, #2c5282, #3a6aa6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-container {
+            display: none;
+        }
+        
+        .student-info {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 4px solid #2c5282;
+        }
+        
+        .info-item {
+            margin-bottom: 8px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .scores-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+        
+        .scores-table th {
+            background: #2c5282;
+            color: white;
+            text-align: left;
+            padding: 14px;
+        }
+        
+        .scores-table td {
+            padding: 14px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .scores-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .scores-table tr:hover {
+            background: #edf2f7;
+        }
+        
+        .total-score {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: #eef7ff;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #1a3a6c;
+            border: 2px dashed #2c5282;
+        }
+        
+        .comment-box {
+            background: #fff8e1;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 25px 0;
+        }
+        
+        .comment-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #e65100;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comment-title i {
+            margin-right: 10px;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #607d8b, #78909c);
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #78909c, #90a4ae);
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            padding: 20px;
+            font-size: 14px;
+            margin-top: 30px;
+        }
+        
+        .disclaimer {
+            font-size: 12px;
+            color: #ff9800;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .student-info {
+                flex-direction: column;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1>福建省2025年初中学业水平考试成绩查询系统</h1>
+                    <div class="subtitle">官方指定查询平台 · 福建省教育考试院</div>
+                </div>
+            </div>
+            <div class="current-date">
+                <i class="fas fa-calendar-alt"></i> 2025年6月28日
+            </div>
+        </header>
+        
+        <div class="warning-banner">
+            <i class="fas fa-exclamation-triangle"></i> 温馨提示：本网站为模拟娱乐版，成绩数据纯属虚构，仅供娱乐
+        </div>
+        
+        <div class="card" id="input-section">
+            <h2 class="card-title"><i class="fas fa-search"></i> 成绩查询</h2>
+            <div class="form-group">
+                <label for="exam-number"><i class="fas fa-id-card"></i> 准考证号</label>
+                <input type="text" id="exam-number" placeholder="请输入14位准考证号">
+            </div>
+            <div class="form-group">
+                <label for="student-id"><i class="fas fa-user"></i> 考生号</label>
+                <input type="text" id="student-id" placeholder="请输入12位考生号">
+            </div>
+            <div class="form-group">
+                <label for="name"><i class="fas fa-signature"></i> 姓名</label>
+                <input type="text" id="name" placeholder="请输入考生姓名">
+            </div>
+            <button class="btn" id="query-btn"><i class="fas fa-paper-plane"></i> 查询成绩</button>
+            
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i> 免责声明：本网站为娱乐模拟系统，所有数据均为随机生成，与实际考试成绩无关。
+            </div>
+        </div>
+        
+        <div class="card result-container" id="result-section">
+            <h2 class="card-title"><i class="fas fa-file-alt"></i> 成绩报告单</h2>
+            
+            <div class="student-info">
+                <div>
+                    <div class="info-item"><span class="info-label">考生姓名：</span> <span id="result-name">-</span></div>
+                    <div class="info-item"><span class="info-label">准考证号：</span> <span id="result-exam-number">-</span></div>
+                    <div class="info-item"><span class="info-label">考生号：</span> <span id="result-student-id">-</span></div>
+                </div>
+                <div>
+                    <div class="info-item"><span class="info-label">查询时间：</span> 2025-06-28 15:45:32</div>
+                    <div class="info-item"><span class="info-label">报告编号：</span> FJ2025062845231</div>
+                    <div class="info-item"><span class="info-label">成绩状态：</span> <span style="color:#e91e63;">已确认</span></div>
+                </div>
+            </div>
+            
+            <table class="scores-table">
+                <thead>
+                    <tr>
+                        <th>科目</th>
+                        <th>卷面分</th>
+                        <th>折算比例</th>
+                        <th>实际得分</th>
+                        <th>等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>语文</td>
+                        <td id="chinese-score">-</td>
+                        <td>100%</td>
+                        <td id="chinese-actual">-</td>
+                        <td id="chinese-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>数学</td>
+                        <td id="math-score">-</td>
+                        <td>100%</td>
+                        <td id="math-actual">-</td>
+                        <td id="math-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>英语</td>
+                        <td id="english-score">-</td>
+                        <td>100%</td>
+                        <td id="english-actual">-</td>
+                        <td id="english-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>物理</td>
+                        <td id="physics-score">-</td>
+                        <td>90%</td>
+                        <td id="physics-actual">-</td>
+                        <td id="physics-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>化学</td>
+                        <td id="chemistry-score">-</td>
+                        <td>60%</td>
+                        <td id="chemistry-actual">-</td>
+                        <td id="chemistry-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>道德与法治</td>
+                        <td id="politics-score">-</td>
+                        <td>50%</td>
+                        <td id="politics-actual">-</td>
+                        <td id="politics-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>历史</td>
+                        <td id="history-score">-</td>
+                        <td>50%</td>
+                        <td id="history-actual">-</td>
+                        <td id="history-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>体育与健康</td>
+                        <td id="pe-score">-</td>
+                        <td>100%</td>
+                        <td id="pe-actual">-</td>
+                        <td id="pe-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>地理</td>
+                        <td id="geography-score">-</td>
+                        <td>30%</td>
+                        <td id="geography-actual">-</td>
+                        <td id="geography-level">-</td>
+                    </tr>
+                    <tr>
+                        <td>生物</td>
+                        <td id="biology-score">-</td>
+                        <td>30%</td>
+                        <td id="biology-actual">-</td>
+                        <td id="biology-level">-</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="total-score">
+                <i class="fas fa-star"></i> 总分：<span id="total-score">0</span> 分 
+                <span style="font-size: 18px; color: #e91e63;">（满分：800分）</span>
+            </div>
+            
+            <div class="comment-box">
+                <div class="comment-title"><i class="fas fa-comment-alt"></i> 评语</div>
+                <div id="comment-text">成绩查询中...</div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-secondary" id="print-btn"><i class="fas fa-print"></i> 打印成绩单</button>
+                <button class="btn" id="back-btn"><i class="fas fa-redo"></i> 重新查询</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>福建省教育考试院版权所有 © 2025</p>
+        <p>成绩查询系统技术支持电话：0591-12345678</p>
+        <p class="disclaimer">本网站为娱乐模拟系统，所有数据均为随机生成，与实际考试成绩无关</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const queryBtn = document.getElementById('query-btn');
+            const backBtn = document.getElementById('back-btn');
+            const printBtn = document.getElementById('print-btn');
+            const inputSection = document.getElementById('input-section');
+            const resultSection = document.getElementById('result-section');
+            
+            // 搞笑评语库
+            const funnyComments = [
+                "系统检测到你的答题卡被外星人劫持，成绩已突破人类认知极限！",
+                "你的卷面分成功触发福建省教育系统隐藏彩蛋 - '学渣之光'成就！",
+                "恭喜你！你的成绩已超越平行宇宙的物理极限，建议申报诺贝尔特别奖！",
+                "经AI分析，你的答题策略完美避开所有正确答案，创造了新的考试哲学！",
+                "你的成绩单已触发教育部的特别关怀程序，请领取安慰奖一份！",
+                "系统提示：你的脑回路过于清奇，建议直接保送外星高等学府深造！",
+                "成绩分析：你的偏科程度已形成学术奇观，建议申请吉尼斯纪录！",
+                "评语：你的卷面展现了后现代解构主义艺术，建议转行当抽象派画家！",
+                "系统警报：你的分数对全省平均分造成毁灭性打击，省教育厅已介入调查！",
+                "温馨提示：根据大数据分析，你更适合发展'打牌'或'COC跑团'事业！"
+            ];
+            
+            // 等级描述
+            const levels = ["A++", "A+", "A", "B+", "B", "C+", "C", "D"];
+            
+            queryBtn.addEventListener('click', function() {
+                const examNumber = document.getElementById('exam-number').value;
+                const studentId = document.getElementById('student-id').value;
+                const name = document.getElementById('name').value;
+                
+                if (!examNumber || !studentId || !name) {
+                    alert('请输入完整的查询信息！');
+                    return;
+                }
+                
+                // 显示结果区域
+                inputSection.style.display = 'none';
+                resultSection.style.display = 'block';
+                
+                // 填充考生信息
+                document.getElementById('result-name').textContent = name;
+                document.getElementById('result-exam-number').textContent = examNumber;
+                document.getElementById('result-student-id').textContent = studentId;
+                
+                // 生成随机但离谱的分数
+                generateScores();
+                
+                // 随机选择一个评语
+                const randomComment = funnyComments[Math.floor(Math.random() * funnyComments.length)];
+                document.getElementById('comment-text').textContent = randomComment;
+                
+                // 滚动到结果区域
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            backBtn.addEventListener('click', function() {
+                resultSection.style.display = 'none';
+                inputSection.style.display = 'block';
+                document.getElementById('exam-number').value = '';
+                document.getElementById('student-id').value = '';
+                document.getElementById('name').value = '';
+                inputSection.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            printBtn.addEventListener('click', function() {
+                alert('成绩单打印功能仅限正式版使用！');
+            });
+            
+            function generateScores() {
+                // 生成离谱但符合规则的分数
+                const scores = {
+                    chinese: getRandomScore(125, 150, true),
+                    math: getRandomScore(140, 150, true),
+                    english: getRandomScore(140, 150, true),
+                    physics: getRandomScore(95, 100, false),
+                    chemistry: getRandomScore(95, 100, false),
+                    politics: getRandomScore(95, 100, false),
+                    history: getRandomScore(95, 100, false),
+                    pe: getRandomScore(38, 40, false),
+                    geography: getRandomScore(95, 100, false),
+                    biology: getRandomScore(95, 100, false)
+                };
+                
+                // 计算实际得分（考虑折算）
+                const actualScores = {
+                    chinese: scores.chinese,
+                    math: scores.math,
+                    english: scores.english,
+                    physics: Math.round(scores.physics * 0.9),
+                    chemistry: Math.round(scores.chemistry * 0.6),
+                    politics: Math.round(scores.politics * 0.5),
+                    history: Math.round(scores.history * 0.5),
+                    pe: scores.pe,
+                    geography: Math.round(scores.geography * 0.3),
+                    biology: Math.round(scores.biology * 0.3)
+                };
+                
+                // 更新表格
+                document.getElementById('chinese-score').textContent = scores.chinese;
+                document.getElementById('chinese-actual').textContent = actualScores.chinese;
+                document.getElementById('chinese-level').textContent = getRandomLevel();
+                
+                document.getElementById('math-score').textContent = scores.math;
+                document.getElementById('math-actual').textContent = actualScores.math;
+                document.getElementById('math-level').textContent = getRandomLevel();
+                
+                document.getElementById('english-score').textContent = scores.english;
+                document.getElementById('english-actual').textContent = actualScores.english;
+                document.getElementById('english-level').textContent = getRandomLevel();
+                
+                document.getElementById('physics-score').textContent = scores.physics;
+                document.getElementById('physics-actual').textContent = actualScores.physics;
+                document.getElementById('physics-level').textContent = getRandomLevel();
+                
+                document.getElementById('chemistry-score').textContent = scores.chemistry;
+                document.getElementById('chemistry-actual').textContent = actualScores.chemistry;
+                document.getElementById('chemistry-level').textContent = getRandomLevel();
+                
+                document.getElementById('politics-score').textContent = scores.politics;
+                document.getElementById('politics-actual').textContent = actualScores.politics;
+                document.getElementById('politics-level').textContent = getRandomLevel();
+                
+                document.getElementById('history-score').textContent = scores.history;
+                document.getElementById('history-actual').textContent = actualScores.history;
+                document.getElementById('history-level').textContent = getRandomLevel();
+                
+                document.getElementById('pe-score').textContent = scores.pe;
+                document.getElementById('pe-actual').textContent = actualScores.pe;
+                document.getElementById('pe-level').textContent = getRandomLevel();
+                
+                document.getElementById('geography-score').textContent = scores.geography;
+                document.getElementById('geography-actual').textContent = actualScores.geography;
+                document.getElementById('geography-level').textContent = getRandomLevel();
+                
+                document.getElementById('biology-score').textContent = scores.biology;
+                document.getElementById('biology-actual').textContent = actualScores.biology;
+                document.getElementById('biology-level').textContent = getRandomLevel();
+                
+                // 计算总分
+                let total = 0;
+                for (const key in actualScores) {
+                    total += actualScores[key];
+                }
+                document.getElementById('total-score').textContent = total;
+                
+                // 添加动画效果
+                document.getElementById('total-score').classList.add('floating');
+            }
+            
+            function getRandomScore(min, max, allowNegative) {
+                // 30%几率生成一个离谱分数
+                if (Math.random() < 0.3) {
+                    const crazyScores = [0, 5, 10, 666, 250, 999, -10, -25, 150, 40];
+                    return crazyScores[Math.floor(Math.random() * crazyScores.length)];
+                }
+                
+                // 生成正常范围内的随机分数
+                let score = Math.floor(Math.random() * (max - min + 1)) + min;
+                
+                // 确保分数在有效范围内
+                if (!allowNegative && score < 0) score = 0;
+                if (score > max) score = max;
+                
+                return score;
+            }
+            
+            function getRandomLevel() {
+                return levels[Math.floor(Math.random() * levels.length)];
+            }
+            
+            // 添加一些初始动画效果
+            setTimeout(() => {
+                document.querySelector('.logo').classList.add('floating');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
